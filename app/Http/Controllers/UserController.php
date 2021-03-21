@@ -5,46 +5,29 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Traits\CustomResponse;
+use App\Models\Room;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Contracts\Auth\Factory as Auth;
 
 class UserController extends Controller{
-    use CustomResponse;    
+    use CustomResponse;
 
-    public function signup(Request $request){
-        $validator = Validator::make($request->all(), [
-            'username' => 'required|min:8|max:64|regex:/(^([a-zA-Z0-9]+)$)/u|unique:users',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed|min:8|max:64',
-        ]);
-
-        if ($validator->fails()) {
-            return $this->respondWithValidationError($validator->errors()->messages(), 422, 'validation.fields');
-        }
-
-        $user = User::create([
-            "username" => $request->input('username'),
-            "email" => $request->input('email'),
-            "password" => bcrypt($request->input('password'))
-        ]);
-
-        return $this->respond($user, 'auth.created', 201);
+    protected $auth;
+    
+    public function __construct(Auth $auth){
+        $this->auth = $auth;
     }
 
-    function login(Request $request){
-        $user= User::where('email', $request->email)->first();
-        
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return $this->respondWithError('auth.failed', 401);
-        }
-        
-        $token = $user->createToken('my-app-token')->plainTextToken;
-        
-        $response = [
-            'user' => $user,
-            'token' => $token
-        ];
+    public function user(Request $request){
+        return $this->respond($request->user());
+    }
 
-        return $this->respond($response, "auth.loggedin", 201);;
+    public function usersAll(Request $request){
+        return $this->respond(User::all());
+    }
+    
+    public function usersOne(Request $request){
+        return $this->respond(User::find($request->id));
     }
 }

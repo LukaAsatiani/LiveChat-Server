@@ -9,18 +9,20 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use App\Traits\Messager;
 
-class Chats implements ShouldBroadcast{
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+class Messages implements ShouldBroadcast{
+    use Dispatchable, InteractsWithSockets, SerializesModels, Messager;
     
-    public $message;
+    public $data;
 
-    public function __construct($message){
-        $this->message = $message;
+    public function __construct($data){
+        $this->data = $data;
     }
 
     public function broadcastWith(){
-        return ['message' => $this->message];
+        $message = $this->sendRoomMessage($this->data['sender_id'], $this->data['room_id'], $this->data['content']);
+        return ['message' => $message];
     }
 
     public function broadcastOn(){

@@ -2,22 +2,31 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Events\Chats;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RoomController;
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
 
-Route::get('/broadcast', function (Request $request) {
-    broadcast(new Chats("hello, bro"));
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 Route::group(['middleware' => 'auth:sanctum'], function(){
-    Route::post("user",[UserController::class,'user']);
-    Route::post("users",[UserController::class,'usersAll']);
-    Route::post("users/{id}",[UserController::class,'usersOne']);
+    Route::post('/broadcast/messages', [RoomController::class, 'sendMessage']);
+    Route::get('user', [UserController::class,'user'])->name('user');
+    Route::get('users', [UserController::class,'usersAll']);
+    Route::get('users/{id}', [UserController::class,'usersOne'])->where('room_id', '[0-9]+');
+    Route::get('logout', [AuthController::class,'logout']);
+    Route::post('rooms', [RoomController::class,'createRoom']);
+    Route::get('rooms', [RoomController::class,'getRoomsList']);
+    Route::post('messages', [RoomController::class,'createRoomMessage']);
+    Route::get('messages/{room_id}', [RoomController::class,'getRoomMessages'])->where('room_id', '[0-9]+');
 });
 
-Route::post("login",[UserController::class,'login']);
-Route::post("signup",[UserController::class,'signup']);
+Route::post('login', [AuthController::class,'login']);
+Route::get('/unauth', [AuthController::class,'unauth'])->name('unauth');
+Route::post('signup', [AuthController::class,'signup']);
+
+Route::any('{any}', function(){
+    return 'Route not found.';
+});
