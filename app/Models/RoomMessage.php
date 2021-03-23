@@ -14,5 +14,11 @@ class RoomMessage extends Model{
         'content'
     ];
 
+    public function sender(){
+        return $this->hasOne(User::class, 'id', 'sender_id')->select('id', 'username');
+    }
     
+    public function m_sender(){
+        return $this->hasOne(User::class, 'id', 'sender_id')->get();
+    }
 }

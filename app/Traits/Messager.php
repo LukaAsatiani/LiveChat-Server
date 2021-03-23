@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Models\RoomMessage;
+use App\Models\Room;
 
 trait Messager {
     public function sendRoomMessage($sender_id, $room_id, $content){
@@ -11,7 +12,8 @@ trait Messager {
             "room_id" => $room_id,
             "content" => $content
         ]);
-
-        return $message;
+        
+        $m = $message->sender;
+        return array_merge($message->getAttributes(), ['sender' => $m->getAttributes()]);
     }
 }

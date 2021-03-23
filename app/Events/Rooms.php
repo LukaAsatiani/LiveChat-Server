@@ -4,15 +4,15 @@ namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use App\Traits\Messager;
+use Illuminate\Support\Facades\Request;
+use App\Traits\RoomTrait as Room;
 
-class Messages implements ShouldBroadcast{
-    use Dispatchable, InteractsWithSockets, SerializesModels, Messager;
+class Rooms implements ShouldBroadcast{
+    use Dispatchable, InteractsWithSockets, SerializesModels, Room;
     
     public $data;
 
@@ -21,11 +21,11 @@ class Messages implements ShouldBroadcast{
     }
 
     public function broadcastWith(){
-        $message = $this->sendRoomMessage($this->data['sender_id'], $this->data['room_id'], $this->data['content']);
-        return ['message' => $message];
+        $room = $this->createRoomT($this->data['creator_id'], $this->data['title']);
+        return ['room' => $room];
     }
 
     public function broadcastOn(){
-        return new Channel('chat');
+        return new Channel('user_'.$this->data['creator_id']);
     }
 }

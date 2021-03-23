@@ -13,7 +13,11 @@ class Room extends Model{
         'creator_id'
     ];
 
+    protected $attributes = [
+        'unread_count' => 0
+    ];
+
     public function messages(){
-        return $this->hasMany(RoomMessage::class, 'room_id');
+        return $this->hasMany(RoomMessage::class, 'room_id')->with('sender');
     }
 }

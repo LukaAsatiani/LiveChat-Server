@@ -103,6 +103,7 @@ return [
     'string'               => ':attribute უნდა იყოს ტექსტი.',
     'timezone'             => ':attribute უნდა იყოს სასაათო სარტყელი.',
     'unique'               => 'ასეთი :attribute უკვე არსებობს.',
+    'unique_multiple'      => 'The group must be unique.',
     'uploaded'             => ':attribute-ის ატვირთვა ვერ მოხერხდა.',
     'url'                  => ':attribute-ის ფორმატი არასწორია.',
     'uuid'                 => ':attribute უნდა იყოს ვალიდური UUID.',

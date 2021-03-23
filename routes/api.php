@@ -13,13 +13,14 @@ use App\Http\Controllers\RoomController;
 
 Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::post('/broadcast/messages', [RoomController::class, 'sendMessage']);
+    Route::post('/broadcast/rooms', [RoomController::class, 'createRoom']);
     Route::get('user', [UserController::class,'user'])->name('user');
     Route::get('users', [UserController::class,'usersAll']);
     Route::get('users/{id}', [UserController::class,'usersOne'])->where('room_id', '[0-9]+');
     Route::get('logout', [AuthController::class,'logout']);
     Route::post('rooms', [RoomController::class,'createRoom']);
     Route::get('rooms', [RoomController::class,'getRoomsList']);
-    Route::post('messages', [RoomController::class,'createRoomMessage']);
+    Route::post('room/user', [RoomController::class,'addUserToRoom']);
     Route::get('messages/{room_id}', [RoomController::class,'getRoomMessages'])->where('room_id', '[0-9]+');
 });
 

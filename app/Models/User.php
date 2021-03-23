@@ -25,6 +25,6 @@ class User extends Authenticatable{
     ];
 
     public function rooms(){
-        return $this->hasMany(Room::class, 'creator_id');
+        return $this->hasManyThrough(Room::class, RoomUserConnector::class, 'user_id', 'id', 'id', 'room_id')->orderBy('created_at', 'asc');;
     }
 }
