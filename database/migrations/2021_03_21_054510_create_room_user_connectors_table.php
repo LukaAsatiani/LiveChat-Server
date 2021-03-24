@@ -10,6 +10,7 @@ class CreateRoomUserConnectorsTable extends Migration{
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('room_id');
             $table->unsignedInteger('unread_count');
+            $table->timestamps();
         });
     }
 

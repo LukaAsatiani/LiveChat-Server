@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class RoomUserConnector extends Model{
     use HasFactory;
 
-    public $timestamps = false;
-
     protected $fillable = [
         'user_id',
         'room_id',
@@ -19,7 +17,7 @@ class RoomUserConnector extends Model{
         'unread_count' => 0  
     ];
 
-    public function rooms(){
-        return $this->hasMany(Room::class, 'id', 'room_id');
+    public function room(){
+        return $this->hasOne(Room::class, 'id', 'room_id');
     }
 }

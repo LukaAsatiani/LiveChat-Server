@@ -18,7 +18,7 @@ class Room extends Model{
     ];
 
     public function messages(){
-        return $this->hasMany(RoomMessage::class, 'room_id')->with('sender')->orderBy('updated_at', 'asc')->take(50);
+        return $this->hasMany(RoomMessage::class, 'room_id')->with('sender')->latest()->limit(50)->orderBy('id', 'desc');
     }
 
     public function last_message(){
@@ -28,5 +28,4 @@ class Room extends Model{
     public function connector(){
         return $this->hasMany(RoomUserConnector::class, 'room_id');
     }
-
 }

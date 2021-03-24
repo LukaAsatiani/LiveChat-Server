@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Room;
 use App\Models\User;
 use App\Events\Messages;
+use App\Events\Rooms;
 use App\Models\RoomUserConnector;
 use Illuminate\Support\Facades\Validator;
 use App\Traits\CustomResponse;
@@ -57,6 +58,7 @@ class RoomController extends Controller{
         //     'title' => $request->title,
         //     'creator_id' => $request->user()->id
         // ]));
+
         $room = $this->createRoomT($request->user()->id, $request->title);
 
         return $this->respond($room, 'room.created');
@@ -67,14 +69,19 @@ class RoomController extends Controller{
     }
 
     public function getRoomsAll(Request $request){
-        return $this->respond($request->user()->all_rooms, 'room.list');
+        return $this->respond(Room::all(), 'room.list');
     }
 
     public function getRoomMessages(Request $request, $room_id){
         $room = Room::find($room_id);
         
+        RoomUserConnector::where('user_id', $request->user()->id)
+            ->where('room_id', $room_id)->update(['unread_count' => 0]);
+
+        broadcast(new Rooms($request->user()->id));
+
         if($room)
-            return $this->respond($room->messages, 'room.messages');
+            return $this->respond($room->messages()->get(), 'room.messages');
         else
             return $this->respondWithError('room.find', 404);
     }
