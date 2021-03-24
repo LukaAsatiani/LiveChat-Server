@@ -14,10 +14,19 @@ class Room extends Model{
     ];
 
     protected $attributes = [
-        'unread_count' => 0
+        
     ];
 
     public function messages(){
-        return $this->hasMany(RoomMessage::class, 'room_id')->with('sender');
+        return $this->hasMany(RoomMessage::class, 'room_id')->with('sender')->orderBy('updated_at', 'asc')->take(50);
     }
+
+    public function last_message(){
+        return $this->hasOne(RoomMessage::class, 'room_id')->with('sender');
+    }
+
+    public function connector(){
+        return $this->hasMany(RoomUserConnector::class, 'room_id');
+    }
+
 }

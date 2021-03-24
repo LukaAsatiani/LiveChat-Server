@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Room;
+use App\Models\User;
 use App\Events\Messages;
-use App\Events\Rooms;
 use App\Models\RoomUserConnector;
 use Illuminate\Support\Facades\Validator;
 use App\Traits\CustomResponse;
@@ -16,13 +16,6 @@ use Illuminate\Support\Facades\DB;
 class RoomController extends Controller{
     use CustomResponse, Messager, RoomTrait;
     
-    // private function createConnector ($data) {
-    //     RoomUserConnector::create([
-    //         "user_id" => $data['user_id'],
-    //         "room_id" => $data['room_id']
-    //     ]);
-    // }
-
     public function addUserToRoom(Request $request){
         Validator::extend('unique_multiple', function ($attribute, $value, $parameters, $validator){
             if (isset($validator->getData()['id'])) return true;
@@ -43,12 +36,12 @@ class RoomController extends Controller{
             return $this->respondWithValidationError($validator->errors()->messages(), 422, 'validation.fields');
         }
 
-        $this->createConnector([
+        RoomUserConnector::create([
             "user_id" => $request->user_id,
             "room_id" => $request->room_id
         ]);
 
-        return $this->respondWithMessage('room.user.added');
+        return $this->respond(User::find($request->user_id)->rooms, 'room.user.added');
     }
 
     public function createRoom(Request $request){
@@ -71,6 +64,10 @@ class RoomController extends Controller{
 
     public function getRoomsList(Request $request){
         return $this->respond($request->user()->rooms, 'room.list');
+    }
+
+    public function getRoomsAll(Request $request){
+        return $this->respond($request->user()->all_rooms, 'room.list');
     }
 
     public function getRoomMessages(Request $request, $room_id){

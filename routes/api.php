@@ -20,6 +20,7 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::get('logout', [AuthController::class,'logout']);
     Route::post('rooms', [RoomController::class,'createRoom']);
     Route::get('rooms', [RoomController::class,'getRoomsList']);
+    Route::get('rooms/all', [RoomController::class,'getRoomsAll']);
     Route::post('room/user', [RoomController::class,'addUserToRoom']);
     Route::get('messages/{room_id}', [RoomController::class,'getRoomMessages'])->where('room_id', '[0-9]+');
 });

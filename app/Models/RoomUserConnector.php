@@ -12,8 +12,14 @@ class RoomUserConnector extends Model{
 
     protected $fillable = [
         'user_id',
-        'room_id'
+        'room_id',
     ];
 
+    protected $attributes = [
+        'unread_count' => 0  
+    ];
 
+    public function rooms(){
+        return $this->hasMany(Room::class, 'id', 'room_id');
+    }
 }

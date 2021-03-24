@@ -10,6 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use App\Traits\Messager;
+use App\Models\Room;
 
 class Messages implements ShouldBroadcast{
     use Dispatchable, InteractsWithSockets, SerializesModels, Messager;
@@ -22,10 +23,10 @@ class Messages implements ShouldBroadcast{
 
     public function broadcastWith(){
         $message = $this->sendRoomMessage($this->data['sender_id'], $this->data['room_id'], $this->data['content']);
-        return ['message' => $message];
+        return ['messages' => Room::find($this->data['room_id'])->messages];
     }
 
     public function broadcastOn(){
-        return new Channel('chat');
+        return new Channel('room_'.$this->data['room_id']);
     }
 }

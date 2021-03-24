@@ -15,8 +15,8 @@ class CreateDialogTable extends Migration
     {
         Schema::create('dialog', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('user1_id');
-            $table->unsignedInteger('user2_id');
+            $table->unsignedInteger('first_user_id');
+            $table->unsignedInteger('second_user_id');
             $table->timestamps();
         });
     }
