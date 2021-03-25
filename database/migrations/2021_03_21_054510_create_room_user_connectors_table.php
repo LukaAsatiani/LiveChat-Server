@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Schema;
 class CreateRoomUserConnectorsTable extends Migration{
     public function up(){
         Schema::create('room_user_connectors', function (Blueprint $table) {
+            $table->id();
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('room_id');
             $table->unsignedInteger('unread_count');
